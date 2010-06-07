@@ -24,6 +24,7 @@ import java.util.List;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import binding.IBindingLink;
 import binding.list.source.ListBindingSource;
 import binding.list.target.ListBindingTarget;
 
@@ -39,7 +40,8 @@ import binding.list.target.ListBindingTarget;
  * @param <T>
  *            : source list elements type
  */
-public class ListBindingLink<T> implements ListDataListener {
+public class ListBindingLink<T> implements ListDataListener,
+		IBindingLink<ListBindingSource<T>, ListBindingTarget<T>> {
 
 	/** List binding source **/
 	private ListBindingSource<T> bindingSource;
@@ -66,20 +68,17 @@ public class ListBindingLink<T> implements ListDataListener {
 	}
 
 	/**
-	 * Getter -
-	 * 
-	 * @return the bindingSource
+	 * {@inherit}
 	 */
+	@Override
 	public ListBindingSource<T> getBindingSource() {
 		return bindingSource;
 	}
 
 	/**
-	 * Setter -
-	 * 
-	 * @param bindingSource
-	 *            the bindingSource to set
+	 * {@inherit}
 	 */
+	@Override
 	public void setBindingSource(ListBindingSource<T> bindingSource) {
 		// terminate previous listening
 		if (this.bindingSource != null) {
@@ -110,20 +109,17 @@ public class ListBindingLink<T> implements ListDataListener {
 	}
 
 	/**
-	 * Getter -
-	 * 
-	 * @return the bindingTarget
+	 * {@inherit}
 	 */
+	@Override
 	public ListBindingTarget<T> getBindingTarget() {
 		return bindingTarget;
 	}
 
 	/**
-	 * Setter -
-	 * 
-	 * @param bindingTarget
-	 *            the bindingTarget to set
+	 * {@inherit}
 	 */
+	@Override
 	public void setBindingTarget(ListBindingTarget<T> bindingTarget) {
 		this.bindingTarget = bindingTarget;
 
@@ -136,8 +132,9 @@ public class ListBindingLink<T> implements ListDataListener {
 	}
 
 	/**
-	 * Call this method to terminate
+	 * {@inherit}
 	 */
+	@Override
 	public void terminateBinding() {
 		setBindingSource(null);
 	}

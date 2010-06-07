@@ -21,6 +21,7 @@ package binding.property;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import binding.IBindingLink;
 import binding.property.source.PropertyBindingSource;
 import binding.property.target.PropertyBindingTarget;
 
@@ -35,7 +36,8 @@ import binding.property.target.PropertyBindingTarget;
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
  */
-public class PropertyBindingLink implements PropertyChangeListener {
+public class PropertyBindingLink implements PropertyChangeListener,
+		IBindingLink<PropertyBindingSource, PropertyBindingTarget> {
 
 	/**
 	 * Binding source, responsible for providing register / unregister change
@@ -64,20 +66,17 @@ public class PropertyBindingLink implements PropertyChangeListener {
 	}
 
 	/**
-	 * Getter -
-	 * 
-	 * @return the bindingSource
+	 * {@inherit}
 	 */
+	@Override
 	public PropertyBindingSource getBindingSource() {
 		return bindingSource;
 	}
 
 	/**
-	 * Setter -
-	 * 
-	 * @param bindingSource
-	 *            the bindingSource to set
+	 * {@inherit}
 	 */
+	@Override
 	public void setBindingSource(PropertyBindingSource bindingSource) {
 		// Change binding source
 		if (this.bindingSource != null) {
@@ -96,20 +95,17 @@ public class PropertyBindingLink implements PropertyChangeListener {
 	}
 
 	/**
-	 * Getter -
-	 * 
-	 * @return the bindingTarget
+	 * {@inherit}
 	 */
+	@Override
 	public PropertyBindingTarget getBindingTarget() {
 		return bindingTarget;
 	}
 
 	/**
-	 * Setter -
-	 * 
-	 * @param bindingTarget
-	 *            the bindingTarget to set
+	 * {@inherit}
 	 */
+	@Override
 	public void setBindingTarget(PropertyBindingTarget bindingTarget) {
 		this.bindingTarget = bindingTarget;
 		// initialize target
@@ -117,9 +113,9 @@ public class PropertyBindingLink implements PropertyChangeListener {
 	}
 
 	/**
-	 * Terminates the current binding (it avoids double link to ensure garbage
-	 * collection)
+	 * {@inherit}
 	 */
+	@Override
 	public void terminateBinding() {
 		setBindingTarget(null);
 	}
