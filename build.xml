@@ -1,0 +1,36 @@
+<project name="build lib" basedir="." default="">
+
+	<property name="version" value="0.60"/>
+	
+	<property name="project.sources.directory" value="src" />
+	<property name="project.libraries.directory" value="lib/" />
+	<property name="jar.directory" value="bin/jar" />
+	<property name="jar.name" value="${jar.directory}/binding_tools_${version}.jar" />
+	<property name="temp.compilation.directory" value="bin/temp" />
+
+	<!-- We clean here the build and deployment directories -->
+	<target name="build">
+		<!-- clean -->
+		<delete dir="${jar.directory}" failonerror="false" />
+		<delete dir="${temp.compilation.directory}" failonerror="false" />
+
+		<!-- create directories for compilation -->
+		<mkdir dir="${jar.directory}" />
+		<mkdir dir="${temp.compilation.directory}" />
+
+		<!-- Define compilation class path -->
+		<path id="compile.classpath">
+			<!-- Adds all libraries (and also sub folder libraries) -->
+			<fileset dir="${project.libraries.directory}" includes="**/*.jar" />
+		</path>
+		<!-- Compile source code -->
+		<javac srcdir="${project.sources.directory}" destdir="${temp.compilation.directory}" classpathref="compile.classpath" />
+
+		<!-- Create the library Jar -->
+		<jar destfile="${jar.name}" basedir="${temp.compilation.directory}" compress="true">
+			<manifest>
+				<attribute name="Built-By" value="Raphael Mechali" />
+			</manifest>
+		</jar>
+	</target>
+</project>
