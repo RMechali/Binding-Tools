@@ -16,51 +16,45 @@
  * If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package binding.property.source;
+package binding.property.source.object;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
 import binding.tools.IntrospectionTools;
 
 /**
- * A property biding source to use when the bean stores many values in a map and
- * fires changes according with the map key (see AbstractAction implementation
- * for instance). To be used, the bean must define the methods below:<br>
- * - get[PropName](mapKey) (forInstance getValue(Action.SHORT_DESCRIPTION))<br>
- * - addPropertyChangeListener(mapKey)<br>
- * - removePropertyChangeListener(mapKey)
+ * Property binding source for a bean property.
  * 
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
  */
-public class MapBindingSource extends AbstractStandardBindingSource {
+public class BeanBindingSource extends AbstractObjectBindingSource {
 
-	/** Bean property name **/
-	private final String propertyKey;
-
-	/** Read method **/
+	/** Read method (not null) **/
 	private final Method readMethod;
 
+	/** Bean property name **/
+	private final String propertyName;
+
 	/**
-	 * 
-	 * Constructor
+	 * Constructor.<br>
+	 * The constructor may propagate exception due to introspection mechanisms.
+	 * Usually this should mean that your bean properties are bad defined.
 	 * 
 	 * @param beanSource
 	 *            : bean source
-	 * @param getMethodName
-	 *            : get method name (for instance "getValue" stands for the
-	 *            method "getValue(propertyKey)")
-	 * @param propertyKey
-	 *            : property key (the map contained key that will be fired - see
-	 *            #AbstractAction.putValue(String,Object) for an example)
+	 * @param propertyName
+	 *            : name of the property to be binded (that will be used to
+	 *            retrieve the getter method and to listen to property changes)
+	 * 
 	 * @throws IllegalArgumentException
 	 *             if the bean source is null
 	 * @throws IllegalArgumentException
-	 *             if the get method name is null
+	 *             if the bean property name is null
 	 * @throws IllegalArgumentException
-	 *             if the map property key is null
-	 * @throws IllegalArgumentException
-	 *             if the get method is not defined for the bean source
+	 *             if the get method is not defined for that property in the
+	 *             bean source
 	 * @throws IllegalArgumentException
 	 *             if the
 	 *             addPropertyChangeListener(String,PropertyChangeListener) is
@@ -69,26 +63,32 @@ public class MapBindingSource extends AbstractStandardBindingSource {
 	 *             if the
 	 *             removePropertyChangeListener(String,PropertyChangeListener)
 	 *             is not defined for the bean source
+	 * @see IntrospectionTools#getProperty(Object, String) for introspection
+	 *      exceptions
 	 */
-	public MapBindingSource(Object beanSource, String getMethodName,
-			String propertyKey) {
+	public BeanBindingSource(Object beanSource, String propertyName) {
+
 		super(beanSource);
 
 		// check parameters
-		if (getMethodName == null) {
+		if (propertyName == null) {
 			throw new IllegalArgumentException(getClass()
-					+ ": The get method name can not be null");
-		}
-		if (propertyKey == null) {
-			throw new IllegalArgumentException(getClass()
-					+ ": The map binding property key can not be null");
+					+ ": The bean binding property name can not be null");
 		}
 
-		// store source property
-		this.propertyKey = propertyKey;
+		// store the property name
+		this.propertyName = propertyName;
 
-		readMethod = IntrospectionTools.retrieveMethod(beanSource,
-				getMethodName, String.class);
+		// retrieve getter method
+		PropertyDescriptor property = IntrospectionTools.getProperty(
+				beanSource, propertyName);
+		readMethod = property.getReadMethod();
+		if (readMethod == null) {
+			throw new IllegalArgumentException(
+					"No read method defined for property " + propertyName
+							+ " in bean " + beanSource);
+		}
+
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class MapBindingSource extends AbstractStandardBindingSource {
 	@Override
 	public Object getInitialValue() {
 		try {
-			return readMethod.invoke(getBeanSource(), propertyKey);
+			return readMethod.invoke(getBeanSource());
 		} catch (Exception e) {
 			// convert the error into a runtime error to not force the user
 			// catching it
@@ -110,8 +110,7 @@ public class MapBindingSource extends AbstractStandardBindingSource {
 	 */
 	@Override
 	protected String getBindedName() {
-		// TODO Auto-generated method stub
-		return propertyKey;
+		return propertyName;
 	}
 
 }

@@ -16,11 +16,12 @@
  * If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package binding.property.source;
+package binding.property.source.object;
 
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 
+import binding.property.source.PropertyBindingSource;
 import binding.tools.IntrospectionTools;
 
 /**
@@ -30,7 +31,7 @@ import binding.tools.IntrospectionTools;
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
  */
-public abstract class AbstractStandardBindingSource implements
+public abstract class AbstractObjectBindingSource implements
 		PropertyBindingSource {
 
 	/** Add listener method (not null) **/
@@ -59,7 +60,7 @@ public abstract class AbstractStandardBindingSource implements
 	 *             removePropertyChangeListener(String,PropertyChangeListener)
 	 *             is not defined for the bean source
 	 */
-	public AbstractStandardBindingSource(Object beanSource) {
+	public AbstractObjectBindingSource(Object beanSource) {
 
 		// check parameters
 		if (beanSource == null) {

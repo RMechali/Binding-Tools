@@ -25,8 +25,8 @@ import binding.list.source.BasicListBindingSource;
 import binding.list.target.BasicListBindingTarget;
 import binding.list.target.ListBindingTarget;
 import binding.property.PropertyBindingLink;
-import binding.property.source.BeanBindingSource;
-import binding.property.source.MapBindingSource;
+import binding.property.source.object.BeanBindingSource;
+import binding.property.source.object.MapBindingSource;
 import binding.property.target.BeanBindingTarget;
 
 import com.jgoodies.common.collect.ObservableList;

@@ -1,11 +1,13 @@
 <project name="build lib" basedir="." default="">
 
-	<property name="version" value="0.60"/>
-	
+	<property name="author.name" value="Raphael Mechali" />
+	<property name="component.version" value="0.60" />
+	<property name="component.name" value="Binding tools" />
+
 	<property name="project.sources.directory" value="src" />
 	<property name="project.libraries.directory" value="lib/" />
 	<property name="jar.directory" value="bin/jar" />
-	<property name="jar.name" value="${jar.directory}/binding_tools_${version}.jar" />
+	<property name="jar.name" value="${jar.directory}/binding_tools_${component.version}.jar" />
 	<property name="temp.compilation.directory" value="bin/temp" />
 
 	<!-- We clean here the build and deployment directories -->
@@ -29,7 +31,9 @@
 		<!-- Create the library Jar -->
 		<jar destfile="${jar.name}" basedir="${temp.compilation.directory}" compress="true">
 			<manifest>
-				<attribute name="Built-By" value="Raphael Mechali" />
+					<attribute name="Created-By" value="${author.name}" />
+					<attribute name="Implementation-Title" value="${component.name}" />
+					<attribute name="Implementation-Version" value="${component.version}" />
 			</manifest>
 		</jar>
 	</target>

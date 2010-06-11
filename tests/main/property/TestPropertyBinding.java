@@ -28,8 +28,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import binding.property.PropertyBindingLink;
-import binding.property.source.BeanBindingSource;
-import binding.property.source.MapBindingSource;
+import binding.property.source.object.BeanBindingSource;
+import binding.property.source.object.MapBindingSource;
 import binding.property.target.BeanBindingTarget;
 import binding.property.target.MapBindingTarget;
 import binding.property.target.PropertyBindingTarget;
