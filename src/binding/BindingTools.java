@@ -25,6 +25,7 @@ import binding.list.source.BasicListBindingSource;
 import binding.list.target.BasicListBindingTarget;
 import binding.list.target.ListBindingTarget;
 import binding.property.PropertyBindingLink;
+import binding.property.source.PropertyBindingSource;
 import binding.property.source.object.BeanBindingSource;
 import binding.property.source.object.MapBindingSource;
 import binding.property.target.BeanBindingTarget;
@@ -93,6 +94,27 @@ public final class BindingTools {
 			String targetProperty) {
 		return new PropertyBindingLink(new MapBindingSource(source,
 				getMethodName, mapPrpertyKey), new BeanBindingTarget(target,
+				targetProperty));
+	}
+
+	/**
+	 * Creates a binding link using a custom source and and a bean setter as
+	 * target
+	 * 
+	 * see {@link BeanBindingTarget} and {@link PropertyBindingLink} for thrown
+	 * exceptions
+	 * 
+	 * @param source
+	 *            : Binding link source
+	 * @param target
+	 *            : target bean
+	 * @param targetProperty
+	 *            : target property name
+	 * @return - The link created
+	 */
+	public static PropertyBindingLink createBinding(
+			PropertyBindingSource source, Object target, String targetProperty) {
+		return new PropertyBindingLink(source, new BeanBindingTarget(target,
 				targetProperty));
 	}
 

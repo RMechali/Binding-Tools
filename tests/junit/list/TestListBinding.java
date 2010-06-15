@@ -16,7 +16,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package main.list;
+package junit.list;
 
 import java.util.ArrayList;
 import java.util.List;

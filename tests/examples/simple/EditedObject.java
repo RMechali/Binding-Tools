@@ -15,69 +15,70 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
-package main.property;
+package examples.simple;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Class for tests; it defines a map over which it fires changes. However, it
- * does not have any meaning as it has been created for tets
+ * Edited bean for the demo
  * 
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
  */
-public class CustomMappable {
+public class EditedObject {
 
-	/** Map of key / properties **/
-	private final Map<String, Object> myProperties;
+	/**
+	 * Edited property logical name. This is a general good practice to declare
+	 * it, in order to facilitate refactor
+	 */
+	public static String EDITED_PROPERTY = "editedProperty";
 
-	/** Property change support **/
+	/**
+	 * Change support
+	 */
 	private final PropertyChangeSupport changeSupport;
+
+	/** Edited property, bindable **/
+	private int editedProperty;
 
 	/**
 	 * Constructor
 	 */
-	public CustomMappable() {
-		myProperties = new HashMap<String, Object>();
+	public EditedObject() {
 		changeSupport = new PropertyChangeSupport(this);
+		editedProperty = 50;
 	}
 
 	/**
-	 * Puts a property in the properties map
+	 * Getter -
 	 * 
-	 * @param key
-	 *            : property key
-	 * @param newValue
-	 *            : property new value
+	 * @return the editedProperty
 	 */
-	public void putValue(String key, Object newValue) {
-		Object oldValue = myProperties.get(key);
-		myProperties.put(key, newValue);
-		changeSupport.firePropertyChange(key, oldValue, newValue);
+	public int getEditedProperty() {
+		return editedProperty;
 	}
 
 	/**
-	 * Returns the current value for the key as parameter
+	 * Setter -
 	 * 
-	 * @param key
-	 *            : property key
-	 * @return - the value for that key
+	 * @param editedProperty
+	 *            the editedProperty to set
 	 */
-	public Object getValue(String key) {
-		return myProperties.get(key);
+	public void setEditedProperty(int editedProperty) {
+		int oldValue = this.editedProperty;
+		this.editedProperty = editedProperty;
+		firePropertyChange(EDITED_PROPERTY, oldValue, this.editedProperty);
 	}
 
 	/**
-	 * Delegate method.
+	 * Delegate method - adds a property change listener
 	 * 
 	 * @param propertyName
-	 *            -
+	 *            : property name
 	 * @param listener
-	 *            -
+	 *            : listener to add
+	 * 
 	 * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
 	 *      java.beans.PropertyChangeListener)
 	 */
@@ -87,12 +88,30 @@ public class CustomMappable {
 	}
 
 	/**
-	 * Delegate method.
+	 * Delegate method - fires a property change
 	 * 
 	 * @param propertyName
-	 *            -
+	 *            : property name
+	 * @param oldValue
+	 *            : old value
+	 * @param newValue
+	 *            : new value
+	 * 
+	 * @see java.beans.PropertyChangeSupport#firePropertyChange(java.lang.String,
+	 *      int, int)
+	 */
+	public void firePropertyChange(String propertyName, int oldValue,
+			int newValue) {
+		changeSupport.firePropertyChange(propertyName, oldValue, newValue);
+	}
+
+	/**
+	 * Delegate method - removes a property change listener
+	 * 
+	 * @param propertyName
+	 *            : property name
 	 * @param listener
-	 *            -
+	 *            : listener to remove
 	 * 
 	 * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
 	 *      java.beans.PropertyChangeListener)

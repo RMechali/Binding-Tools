@@ -16,7 +16,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package main.property;
+package junit.property;
 
 import java.awt.Color;
 

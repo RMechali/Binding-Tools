@@ -116,8 +116,10 @@ public abstract class AbstractBindingSourceAdapter<T> implements
 		Object oldValue = this.adaptedProperty;
 		this.adaptedProperty = adaptedProperty;
 		// fire value change
-		changeSupport.firePropertyChange(ADAPTED_PROPERTY, oldValue,
-				this.adaptedProperty);
+		if (changeSupport != null) {
+			changeSupport.firePropertyChange(ADAPTED_PROPERTY, oldValue,
+					this.adaptedProperty);
+		}
 	}
 
 	/**
@@ -144,7 +146,15 @@ public abstract class AbstractBindingSourceAdapter<T> implements
 				&& this.changeSupport.getPropertyChangeListeners().length == 0) {
 			stopListening();
 		}
+	}
 
+	/**
+	 * Getter -
+	 * 
+	 * @return the eventSource
+	 */
+	public T getEventSource() {
+		return eventSource;
 	}
 
 }

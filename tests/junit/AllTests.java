@@ -16,10 +16,10 @@
  * If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package main;
+package junit;
 
-import main.list.TestListBinding;
-import main.property.TestPropertyBinding;
+import junit.list.TestListBinding;
+import junit.property.TestPropertyBinding;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

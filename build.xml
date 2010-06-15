@@ -1,7 +1,7 @@
 <project name="build lib" basedir="." default="">
 
 	<property name="author.name" value="Raphael Mechali" />
-	<property name="component.version" value="0.60" />
+	<property name="component.version" value="0.70" />
 	<property name="component.name" value="Binding tools" />
 
 	<property name="project.sources.directory" value="src" />
