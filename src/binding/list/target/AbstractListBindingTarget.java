@@ -98,11 +98,18 @@ public abstract class AbstractListBindingTarget<T, U> implements
 	@Override
 	public void intervalRemoved(List<T> sourceElements, int firstIndex,
 			int lastIndex) {
-		// number of elements to remove
-		int toRemove = (lastIndex - firstIndex) + 1;
-		for (int i = 0; i < toRemove; i++) {
-			// always remove the first index, that should shift the list tail
-			this.target.remove(firstIndex);
-		}
+
+		List<U> toRemove = this.target.subList(firstIndex, lastIndex + 1);
+		removeElements(toRemove);
+	}
+
+	/**
+	 * Removes the following elements from the local copy list
+	 * 
+	 * @param toRemove
+	 *            : elements to remove
+	 */
+	protected void removeElements(List<U> toRemove) {
+		toRemove.clear();
 	}
 }

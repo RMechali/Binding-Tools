@@ -19,6 +19,7 @@
 package junit;
 
 import junit.list.TestListBinding;
+import junit.property.ChainedPropertyBindingTest;
 import junit.property.TestPropertyBinding;
 
 import org.junit.runner.RunWith;
@@ -31,7 +32,8 @@ import org.junit.runners.Suite;
  * Distributed under Lesser GNU General Public License (LGPL)
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { TestPropertyBinding.class, TestListBinding.class })
+@Suite.SuiteClasses( { TestPropertyBinding.class, TestListBinding.class,
+		ChainedPropertyBindingTest.class })
 public class AllTests {
 	// all tests
 }
