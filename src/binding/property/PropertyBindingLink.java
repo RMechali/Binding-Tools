@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.property;
 
 import java.beans.PropertyChangeEvent;
@@ -27,9 +26,8 @@ import binding.property.target.PropertyBindingTarget;
 
 /**
  * A binding link for property changes. It uses a binding source and a binding
- * target to perform binding. You can call terminateBinding() or
- * setBindingSource(null) to terminate binding and ensure it can be garbage
- * collected.
+ * target to perform binding. You can call terminateBinding() to terminate binding and ensure it 
+ * can be garbage collected.
  * 
  * The property binding process updates the target as soon as you have set it.
  * 
@@ -37,123 +35,123 @@ import binding.property.target.PropertyBindingTarget;
  * Distributed under Lesser GNU General Public License (LGPL)
  */
 public class PropertyBindingLink implements PropertyChangeListener,
-		IBindingLink<PropertyBindingSource, PropertyBindingTarget> {
+                                            IBindingLink<PropertyBindingSource, PropertyBindingTarget> {
 
-	/**
-	 * Binding source, responsible for providing register / unregister change
-	 * listener and initial value getter
-	 **/
-	private PropertyBindingSource bindingSource;
+    /**
+     * Binding source, responsible for providing register / unregister change
+     * listener and initial value getter
+     **/
+    private PropertyBindingSource bindingSource;
 
-	/** Binding target, responsible for updating / notifying the value change **/
-	private PropertyBindingTarget bindingTarget;
+    /** Binding target, responsible for updating / notifying the value change **/
+    private PropertyBindingTarget bindingTarget;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param bindingSource
-	 *            : binding source
-	 * @param bindingTarget
-	 *            : binding target
-	 */
-	public PropertyBindingLink(PropertyBindingSource bindingSource,
-			PropertyBindingTarget bindingTarget) {
-		super();
-		// a - set the source first (to not notify two times the target)
-		setBindingSource(bindingSource);
-		// b - set the target
-		setBindingTarget(bindingTarget);
-	}
+    /**
+     * Constructor
+     * 
+     * @param bindingSource : binding source
+     * @param bindingTarget : binding target
+     */
+    public PropertyBindingLink(PropertyBindingSource bindingSource,
+                               PropertyBindingTarget bindingTarget) {
+        super();
+        // a - set the source first (to not notify two times the target)
+        setBindingSource(bindingSource);
+        // b - set the target
+        setBindingTarget(bindingTarget);
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public PropertyBindingSource getBindingSource() {
-		return bindingSource;
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public PropertyBindingSource getBindingSource() {
+        return bindingSource;
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void setBindingSource(PropertyBindingSource bindingSource) {
-		// Change binding source
-		if (this.bindingSource != null) {
-			// stop listening for the previous source events
-			this.bindingSource.removePropertyChangeListener(this);
-		}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void setBindingSource(PropertyBindingSource bindingSource) {
+        // Change binding source
+        if (this.bindingSource != null) {
+            // stop listening for the previous source events
+            this.bindingSource.removePropertyChangeListener(this);
+        }
 
-		this.bindingSource = bindingSource;
+        this.bindingSource = bindingSource;
 
-		if (this.bindingSource != null) {
-			// begin binding for the new source events
-			this.bindingSource.addPropertyChangeListener(this);
-		}
-		// initialize target (with null value if there is no longer source)
-		notifyInitialValue();
-	}
+        if (this.bindingSource != null) {
+            // begin binding for the new source events
+            this.bindingSource.addPropertyChangeListener(this);
+        }
+        // initialize target (with null value if there is no longer source)
+        notifyInitialValue();
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public PropertyBindingTarget getBindingTarget() {
-		return bindingTarget;
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public PropertyBindingTarget getBindingTarget() {
+        return bindingTarget;
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void setBindingTarget(PropertyBindingTarget bindingTarget) {
-		this.bindingTarget = bindingTarget;
-		// initialize target
-		notifyInitialValue();
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void setBindingTarget(PropertyBindingTarget bindingTarget) {
+        // notify previous binding target that binding terminates
+        if (this.bindingTarget != null) {
+            updateTarget(null);
+        }
+        this.bindingTarget = bindingTarget;
+        // initialize new target
+        notifyInitialValue();
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void terminateBinding() {
-		setBindingTarget(null);
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void terminateBinding() {
+        setBindingSource(null);
+        setBindingTarget(null);
+    }
 
-	/**
-	 * Notifies the target of the initial value (to avoid unnecessary
-	 * initialization code)
-	 * 
-	 * @note : binding source must not be null
-	 */
-	private void notifyInitialValue() {
-		if (this.bindingSource != null) {
-			updateTarget(this.bindingSource.getInitialValue());
-		} else {
-			updateTarget(null);
-		}
-	}
+    /**
+     * Notifies the target of the initial value (to avoid unnecessary
+     * initialization code)
+     */
+    private void notifyInitialValue() {
+        if (this.bindingSource != null) {
+            updateTarget(this.bindingSource.getInitialValue());
+        }
+        else {
+            updateTarget(null);
+        }
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		// the property changed, let the target update it
-		updateTarget(evt.getNewValue());
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // the property changed, let the target update it
+        updateTarget(evt.getNewValue());
+    }
 
-	/**
-	 * Makes the binding target update
-	 * 
-	 * @param newValue
-	 *            : new value
-	 */
-	private void updateTarget(Object newValue) {
-		if (this.bindingTarget != null) {
-			// let the target update the new value
-			this.bindingTarget.updateTarget(newValue);
-		}
-	}
-
+    /**
+     * Makes the binding target update
+     * 
+     * @param newValue : new value
+     */
+    private void updateTarget(Object newValue) {
+        if (this.bindingTarget != null) {
+            // let the target update the new value
+            this.bindingTarget.updateTarget(newValue);
+        }
+    }
 }

@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package junit.property;
 
 import java.beans.PropertyChangeListener;
@@ -32,74 +31,73 @@ import java.util.Map;
  */
 public class CustomMappable {
 
-	/** Map of key / properties **/
-	private final Map<String, Object> myProperties;
+    /** Map of key / properties **/
+    private final Map<String, Object> myProperties;
 
-	/** Property change support **/
-	private final PropertyChangeSupport changeSupport;
+    /** Property change support **/
+    private final PropertyChangeSupport changeSupport;
 
-	/**
-	 * Constructor
-	 */
-	public CustomMappable() {
-		myProperties = new HashMap<String, Object>();
-		changeSupport = new PropertyChangeSupport(this);
-	}
+    /**
+     * Constructor
+     */
+    public CustomMappable() {
+        myProperties = new HashMap<String, Object>();
+        changeSupport = new PropertyChangeSupport(this);
+    }
 
-	/**
-	 * Puts a property in the properties map
-	 * 
-	 * @param key
-	 *            : property key
-	 * @param newValue
-	 *            : property new value
-	 */
-	public void putValue(String key, Object newValue) {
-		Object oldValue = myProperties.get(key);
-		myProperties.put(key, newValue);
-		changeSupport.firePropertyChange(key, oldValue, newValue);
-	}
+    /**
+     * Puts a property in the properties map
+     * 
+     * @param key
+     *            : property key
+     * @param newValue
+     *            : property new value
+     */
+    public void putValue(String key, Object newValue) {
+        Object oldValue = myProperties.get(key);
+        myProperties.put(key, newValue);
+        changeSupport.firePropertyChange(key, oldValue, newValue);
+    }
 
-	/**
-	 * Returns the current value for the key as parameter
-	 * 
-	 * @param key
-	 *            : property key
-	 * @return - the value for that key
-	 */
-	public Object getValue(String key) {
-		return myProperties.get(key);
-	}
+    /**
+     * Returns the current value for the key as parameter
+     * 
+     * @param key
+     *            : property key
+     * @return - the value for that key
+     */
+    public Object getValue(String key) {
+        return myProperties.get(key);
+    }
 
-	/**
-	 * Delegate method.
-	 * 
-	 * @param propertyName
-	 *            -
-	 * @param listener
-	 *            -
-	 * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
-	 *      java.beans.PropertyChangeListener)
-	 */
-	public void addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		changeSupport.addPropertyChangeListener(propertyName, listener);
-	}
+    /**
+     * Delegate method.
+     * 
+     * @param propertyName
+     *            -
+     * @param listener
+     *            -
+     * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
+     *      java.beans.PropertyChangeListener)
+     */
+    public void addPropertyChangeListener(String propertyName,
+                                          PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(propertyName, listener);
+    }
 
-	/**
-	 * Delegate method.
-	 * 
-	 * @param propertyName
-	 *            -
-	 * @param listener
-	 *            -
-	 * 
-	 * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
-	 *      java.beans.PropertyChangeListener)
-	 */
-	public void removePropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		changeSupport.removePropertyChangeListener(propertyName, listener);
-	}
-
+    /**
+     * Delegate method.
+     * 
+     * @param propertyName
+     *            -
+     * @param listener
+     *            -
+     * 
+     * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
+     *      java.beans.PropertyChangeListener)
+     */
+    public void removePropertyChangeListener(String propertyName,
+                                             PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(propertyName, listener);
+    }
 }

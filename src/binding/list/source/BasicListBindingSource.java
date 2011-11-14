@@ -15,14 +15,11 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.list.source;
 
+import binding.list.definition.MutableList;
+import binding.list.definition.TypedListDataListener;
 import java.util.List;
-
-import javax.swing.event.ListDataListener;
-
-import com.jgoodies.common.collect.ObservableList;
 
 /**
  * A straight forward implementation based on JGoodies observable typed list.
@@ -35,52 +32,49 @@ import com.jgoodies.common.collect.ObservableList;
  */
 public class BasicListBindingSource<T> implements ListBindingSource<T> {
 
-	/**
-	 * Source observable list
-	 */
-	private final ObservableList<T> list;
+    /**
+     * Source observable list
+     */
+    private final MutableList<T> list;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param list
-	 *            : source list
-	 * @throws IllegalArgumentException
-	 *             : if the source list is null
-	 */
-	public BasicListBindingSource(ObservableList<T> list) {
-		// check parameters
-		if (list == null) {
-			throw new IllegalArgumentException(getClass()
-					+ ": the source list can not be null");
-		}
+    /**
+     * Constructor
+     * 
+     * @param list : source list
+     * @throws IllegalArgumentException if the source list is null
+     */
+    public BasicListBindingSource(MutableList<T> list) {
+        // check parameters
+        if (list == null) {
+            throw new IllegalArgumentException(getClass()
+                    + ": the source list can not be null");
+        }
 
-		this.list = list;
-	}
+        this.list = list;
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void addListDataListener(ListDataListener listener) {
-		this.list.addListDataListener(listener);
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void addListDataListener(TypedListDataListener listener) {
+        this.list.addListDataListener(listener);
 
-	}
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public List<T> getElements() {
-		return this.list;
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void removeListDataListener(TypedListDataListener listener) {
+        this.list.removeListDataListener(listener);
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void removeListDataListener(ListDataListener listener) {
-		this.list.removeListDataListener(listener);
-	}
-
+    /**
+     * {@inherit}
+     */
+    @Override
+    public List<T> getElements() {
+        return this.list;
+    }
 }

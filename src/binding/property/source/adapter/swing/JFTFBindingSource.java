@@ -32,60 +32,58 @@ import binding.property.source.adapter.AbstractBindingSourceAdapter;
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
  */
-public abstract class JFTFBindingSource extends
-		AbstractBindingSourceAdapter<JFormattedTextField> implements
-		PropertyChangeListener {
+public abstract class JFTFBindingSource extends AbstractBindingSourceAdapter<JFormattedTextField> implements
+        PropertyChangeListener {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param eventSource
-	 *            : event source
-	 */
-	public JFTFBindingSource(JFormattedTextField eventSource) {
-		super(eventSource);
-	}
+    /**
+     * Constructor
+     * 
+     * @param eventSource : event source
+     */
+    public JFTFBindingSource(JFormattedTextField eventSource) {
+        super(eventSource);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void startListening(JFormattedTextField eventSource) {
-		eventSource.addPropertyChangeListener("value", this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void startListening(JFormattedTextField eventSource) {
+        eventSource.addPropertyChangeListener("value", this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void stopListening(JFormattedTextField eventSource) {
-		eventSource.addPropertyChangeListener("value", this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void stopListening(JFormattedTextField eventSource) {
+        eventSource.addPropertyChangeListener("value", this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object getInitialValue() {
-		return convert(getEventSource().getValue());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object getInitialValue() {
+        return convert(getEventSource().getValue());
+    }
 
-	/**
-	 * Convert the current formatted text field value to the value that should
-	 * be propagated (actually the link target could do it too, but there is no
-	 * reason for the target to depend on the source API problems!)
-	 * 
-	 * @param value : current formatted text field value (can be null)
-	 * @return - the converted object (an integer, a double, and so on... according with the type you expect this binding source to propagate)
-	 */
-	protected abstract Object convert(Object value);
+    /**
+     * Convert the current formatted text field value to the value that should
+     * be propagated (actually the link target could do it too, but there is no
+     * reason for the target to depend on the source API problems!)
+     * 
+     * @param value : current formatted text field value (can be null)
+     * @return - the converted object (an integer, a double, and so on... according with the type you expect this binding source to propagate)
+     */
+    protected abstract Object convert(Object value);
 
-	/**
-	 * {@inheritDoc}}
-	 */
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		// update the adapted property to fire the event change
-		setAdaptedProperty(convert(evt.getNewValue()));		
-	}
+    /**
+     * {@inheritDoc}}
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // update the adapted property to fire the event change
+        setAdaptedProperty(convert(evt.getNewValue()));
+    }
 }

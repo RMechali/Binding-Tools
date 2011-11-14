@@ -15,24 +15,23 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.list;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 import binding.IBindingLink;
+import binding.list.definition.TypedListDataEvent;
+import binding.list.definition.TypedListDataListener;
 import binding.list.source.ListBindingSource;
 import binding.list.target.ListBindingTarget;
 
 /**
- * A binding link for list event. It is based on JGoodies Observable lists
- * system. As for PropertyBindingLink, you can call terminate binding or
- * setBindingSource(null) to terminate binding and ensure GC can recover your
- * objects.
+ * A binding link for list event. It is based on MutableList (a typed extension of java.util.List 
+ * and javax.swing.ListModel). As for PropertyBindingLink, you can call terminate binding 
+ * to terminate binding and ensure GC can recover your (such call will "make the illusion" to 
+ * binding target that the list is now empty so that it can destroy its corresponding objects).
  * 
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
@@ -40,222 +39,190 @@ import binding.list.target.ListBindingTarget;
  * @param <T>
  *            : source list elements type
  */
-public class ListBindingLink<T> implements ListDataListener,
-		IBindingLink<ListBindingSource<T>, ListBindingTarget<T>> {
+public class ListBindingLink<T> implements TypedListDataListener<T>,
+                                           IBindingLink<ListBindingSource<T>, ListBindingTarget<T>> {
 
-	/** List binding source **/
-	private ListBindingSource<T> bindingSource;
+    /** List binding source **/
+    private ListBindingSource<T> bindingSource;
 
-	/** List binding target **/
-	private ListBindingTarget<T> bindingTarget;
+    /** List binding target **/
+    private ListBindingTarget<T> bindingTarget;
 
-	/** Previous list value (used to compute differences) **/
-	private List<T> previousValue;
+    /**
+     * Constructor
+     * 
+     * @param bindingSource : binding source
+     * @param bindingTarget : binding target
+     */
+    public ListBindingLink(ListBindingSource<T> bindingSource,
+                           ListBindingTarget<T> bindingTarget) {
+        setBindingSource(bindingSource);
+        setBindingTarget(bindingTarget);
+    }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param bindingSource
-	 *            : binding source
-	 * @param bindingTarget
-	 *            : binding target
-	 */
-	public ListBindingLink(ListBindingSource<T> bindingSource,
-			ListBindingTarget<T> bindingTarget) {
-		previousValue = new ArrayList<T>();
-		setBindingSource(bindingSource);
-		setBindingTarget(bindingTarget);
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public ListBindingSource<T> getBindingSource() {
+        return bindingSource;
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public ListBindingSource<T> getBindingSource() {
-		return bindingSource;
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void setBindingSource(ListBindingSource<T> bindingSource) {
+        // terminate previous listening (keep previous elements list before)
+        List<T> previousElements = getCurrentElements();
+        if (this.bindingSource != null) {
+            this.bindingSource.removeListDataListener(this);
+        }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void setBindingSource(ListBindingSource<T> bindingSource) {
-		// terminate previous listening
-		if (this.bindingSource != null) {
-			this.bindingSource.removeListDataListener(this);
-		}
+        // Set up the new source listening
+        this.bindingSource = bindingSource;
+        if (this.bindingSource != null) {
+            this.bindingSource.addListDataListener(this);
+        }
 
-		this.bindingSource = bindingSource;
+        // Update binding target state : emulate a remove all / add all event
+        List<T> currentElements = getCurrentElements();
 
-		// start the new listening
-		if (this.bindingSource != null) {
-			this.bindingSource.addListDataListener(this);
-		}
+        if (!previousElements.isEmpty()) {
+            fireRemoveAll(0, previousElements.size(), previousElements);
+        }
 
-		// initialize target
-		int previousSize = previousValue.size();
-		// store the new source elements value (make it non correlated with
-		// source)
-		List<T> currentElements = getCurrentElements();
-		this.previousValue = new ArrayList<T>(currentElements);
-		// initialize binding source : emulate a remove all / add all event
-		if (previousSize != 0) {
-			fireRemoveAll(0, previousSize - 1);
-		}
-		int currentSize = currentElements.size();
-		if (currentSize != 0) {
-			fireAddAll(0, currentSize - 1);
-		}
-	}
+        int currentSize = currentElements.size();
+        if (currentSize != 0) {
+            fireAddAll(0, currentSize - 1, currentElements);
+        }
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public ListBindingTarget<T> getBindingTarget() {
-		return bindingTarget;
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public ListBindingTarget<T> getBindingTarget() {
+        return bindingTarget;
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void setBindingTarget(ListBindingTarget<T> bindingTarget) {
-		this.bindingTarget = bindingTarget;
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void setBindingTarget(ListBindingTarget<T> bindingTarget) {
+        // remove previous binding target : leave it removing all current elements if it is not empty
+        final List<T> currentElements = getCurrentElements();
+        int size = currentElements.size();
+        if (this.bindingTarget != null && !currentElements.isEmpty()) {
+            fireRemoveAll(0, size - 1, currentElements);
+        }
 
-		// initialize target binding value : fire an add All elements if the
-		// source list is not empty
-		int size = getCurrentElements().size();
-		if (size != 0) {
-			fireAddAll(0, size - 1);
-		}
-	}
+        // set new target
+        this.bindingTarget = bindingTarget;
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void terminateBinding() {
-		setBindingSource(null);
-	}
+        // initialize new target binding value : fire an add All elements if the
+        // source list is not empty
+        if (!currentElements.isEmpty()) {
+            fireAddAll(0, size - 1, currentElements);
+        }
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void contentsChanged(ListDataEvent e) {
-		if (this.bindingTarget != null) {
-			fireChanges(e.getIndex0(), e.getIndex1());
-		}
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void terminateBinding() {
+        // remove source first so that target is notified
+        setBindingSource(null);
+        // remove target to break every double link
+        setBindingTarget(null);
+    }
 
-	/**
-	 * Emulates a changes event by sending an add / remove event
-	 * 
-	 * @param firstIndex
-	 *            : first index that changed
-	 * @param lastIndex
-	 *            : last index that changed
-	 */
-	private void fireChanges(int firstIndex, int lastIndex) {
-		// convert that event into add / remove elements
-		// a - store the new list state (make it non correlated with source)
-		List<T> previousStep = this.previousValue;
-		previousValue = new ArrayList<T>(getCurrentElements());
-		// b - remove all (ensure the last item in in the previous list
-		// size)
-		fireRemoveAll(firstIndex, Math.min(lastIndex, previousStep.size()));
-		// c - add all
-		fireAddAll(firstIndex, lastIndex);
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void contentsChanged(TypedListDataEvent e) {
+        fireChanges(e.getIndex0(), e.getIndex1(), e.getPreviousElements(), e.getNewElements());
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void intervalAdded(ListDataEvent e) {
-		// store the new list state (make it non correlated with source)
-		this.previousValue = new ArrayList<T>(this.getCurrentElements());
-		// fire the list change
-		fireAddAll(e.getIndex0(), e.getIndex1());
-	}
+    /**
+     * Emulates a changes event by sending an add / remove event
+     * 
+     * @param firstIndex : first index that changed
+     * @param lastIndex  : last index that changed
+     * @param previousElements : previous elements
+     * @param newElements : new elements
+     */
+    private void fireChanges(int firstIndex, int lastIndex, List<T> previousElements,
+                             List<T> newElements) {
+        // convert that event into add / remove elements
+        // a - Fire remove all previous elements
+        fireRemoveAll(firstIndex, lastIndex, previousElements);
+        // b - Fire add all new elements
+        fireAddAll(firstIndex, lastIndex, newElements);
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void intervalRemoved(ListDataEvent e) {
-		// store the new list state (make it non correlated with source)
-		this.previousValue = new ArrayList<T>(this.getCurrentElements());
-		// fire changes
-		fireRemoveAll(e.getIndex0(), e.getIndex1());
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void intervalAdded(TypedListDataEvent e) {
+        // fire the list add event
+        fireAddAll(e.getIndex0(), e.getIndex1(), e.getNewElements());
+    }
 
-	/**
-	 * Computes and returns the current source elements
-	 * 
-	 * @return - an empty list if source is not set, the source elements
-	 *         otherwise
-	 */
-	private List<T> getCurrentElements() {
-		if (this.bindingSource != null) {
-			return this.bindingSource.getElements();
-		}
-		return new ArrayList<T>();
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void intervalRemoved(TypedListDataEvent e) {
+        // fire the list remove event
+        fireRemoveAll(e.getIndex0(), e.getIndex1(), e.getPreviousElements());
+    }
 
-	/**
-	 * Fires a multiple elements removed event
-	 * 
-	 * @param firstIndex
-	 *            : first remove index in the source list
-	 * @param lastIndex
-	 *            : last remove index in the source list
-	 */
-	private void fireRemoveAll(int firstIndex, int lastIndex) {
-		if (this.bindingTarget != null) {
-			this.bindingTarget.intervalRemoved(getCurrentElements(),
-					firstIndex, lastIndex);
-		}
-	}
+    /**
+     * Computes and returns the current source elements
+     * 
+     * @return an empty list if source is not set, the source elements
+     *         otherwise
+     */
+    private List<T> getCurrentElements() {
+        if (this.bindingSource != null) {
+            return this.bindingSource.getElements();
+        }
+        return new ArrayList<T>();
+    }
 
-	/**
-	 * Fires an add all elements
-	 * 
-	 * @param firstIndex
-	 *            : first element added index
-	 * @param lastIndex
-	 *            : last element added index
-	 */
-	private void fireAddAll(int firstIndex, int lastIndex) {
-		if (this.bindingTarget != null) {
-			// build the list of elements added
-			List<T> currentElements = getCurrentElements();
-			List<T> elementsAdded = buildSubList(currentElements, firstIndex,
-					lastIndex);
-			// fire elements added
-			this.bindingTarget.intervalAdded(currentElements, elementsAdded,
-					firstIndex);
-		}
-	}
+    /**
+     * Fires a multiple elements removed event
+     * 
+     * @param firstIndex : first remove index in the source list
+     * @param lastIndex : last remove index in the source list
+     * @param removedElements : removed elements
+     */
+    private void fireRemoveAll(int firstIndex, int lastIndex, List<T> removedElements) {
+        if (this.bindingTarget != null) {
+            this.bindingTarget.intervalRemoved(getCurrentElements(), removedElements,
+                                               firstIndex, lastIndex);
+        }
+    }
 
-	/**
-	 * Builds a sub list from index0 to index1 (inclusive)
-	 * 
-	 * @param list
-	 *            : initial list
-	 * @param index0
-	 *            : first index of the sub list
-	 * @param index1
-	 *            : last index of the sub list
-	 * @return - the built sub list
-	 */
-	private static <T> List<T> buildSubList(List<T> list, int index0, int index1) {
-		List<T> subList = new ArrayList<T>();
-		for (int i = index0; i <= index1; i++) {
-			subList.add(list.get(i));
-		}
-		return subList;
-	}
-
+    /**
+     * Fires an add all elements
+     * 
+     * @param firstIndex : first element added index
+     * @param lastIndex : last element added index
+     * @param addedElements : added elements
+     */
+    private void fireAddAll(int firstIndex, int lastIndex, List<T> addedElements) {
+        if (this.bindingTarget != null) {
+            // build the list of elements added
+            List<T> currentElements = getCurrentElements();
+            // fire elements added
+            this.bindingTarget.intervalAdded(currentElements, addedElements,
+                                             firstIndex, lastIndex);
+        }
+    }
 }

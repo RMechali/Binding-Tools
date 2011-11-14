@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.property.source;
 
 import java.beans.PropertyChangeListener;
@@ -30,27 +29,24 @@ import java.beans.PropertyChangeListener;
  */
 public interface PropertyBindingSource {
 
-	/**
-	 * Getter for the initial value
-	 * 
-	 * @return - the initial value
-	 */
-	Object getInitialValue();
+    /**
+     * Getter for the initial value
+     * 
+     * @return - the initial value
+     */
+    Object getInitialValue();
 
-	/**
-	 * Adds a property change listener for this property binding source
-	 * 
-	 * @param listener
-	 *            : listener to add
-	 */
-	void addPropertyChangeListener(PropertyChangeListener listener);
+    /**
+     * Adds a property change listener for this property binding source
+     * 
+     * @param listener : listener to add
+     */
+    void addPropertyChangeListener(PropertyChangeListener listener);
 
-	/**
-	 * Removes a property change listener for this property binding source
-	 * 
-	 * @param listener
-	 *            : listener to remove
-	 */
-	void removePropertyChangeListener(PropertyChangeListener listener);
-
+    /**
+     * Removes a property change listener for this property binding source
+     * 
+     * @param listener : listener to remove
+     */
+    void removePropertyChangeListener(PropertyChangeListener listener);
 }

@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.property.source.object;
 
 import java.beans.PropertyDescriptor;
@@ -31,86 +30,78 @@ import binding.tools.IntrospectionTools;
  */
 public class BeanBindingSource extends AbstractObjectBindingSource {
 
-	/** Read method (not null) **/
-	private final Method readMethod;
+    /** Read method (not null) **/
+    private final Method readMethod;
 
-	/** Bean property name **/
-	private final String propertyName;
+    /** Bean property name **/
+    private final String propertyName;
 
-	/**
-	 * Constructor.<br>
-	 * The constructor may propagate exception due to introspection mechanisms.
-	 * Usually this should mean that your bean properties are bad defined.
-	 * 
-	 * @param beanSource
-	 *            : bean source
-	 * @param propertyName
-	 *            : name of the property to be binded (that will be used to
-	 *            retrieve the getter method and to listen to property changes)
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if the bean source is null
-	 * @throws IllegalArgumentException
-	 *             if the bean property name is null
-	 * @throws IllegalArgumentException
-	 *             if the get method is not defined for that property in the
-	 *             bean source
-	 * @throws IllegalArgumentException
-	 *             if the
-	 *             addPropertyChangeListener(String,PropertyChangeListener) is
-	 *             not defined for the bean source
-	 * @throws IllegalArgumentException
-	 *             if the
-	 *             removePropertyChangeListener(String,PropertyChangeListener)
-	 *             is not defined for the bean source
-	 * @see IntrospectionTools#getProperty(Object, String) for introspection
-	 *      exceptions
-	 */
-	public BeanBindingSource(Object beanSource, String propertyName) {
+    /**
+     * Constructor.<br>
+     * The constructor may propagate exception due to introspection mechanisms.
+     * Usually this should mean that your bean properties are bad defined.
+     * 
+     * @param beanSource : bean source
+     * @param propertyName : name of the property to be binded (that will be used to
+     *            retrieve the getter method and to listen to property changes)
+     * 
+     * @throws IllegalArgumentException if the bean source is null
+     * @throws IllegalArgumentException if the bean property name is null
+     * @throws IllegalArgumentException if the get method is not defined for that property in the
+     *             bean source
+     * @throws IllegalArgumentException if the 
+     *              addPropertyChangeListener(String,PropertyChangeListener) is not defined for the 
+     *              bean source
+     * @throws IllegalArgumentException if the
+     *             removePropertyChangeListener(String,PropertyChangeListener) is not defined for
+     *              the bean source
+     * @see IntrospectionTools#getProperty(Object, String) for introspection exceptions
+     */
+    public BeanBindingSource(Object beanSource, String propertyName) {
 
-		super(beanSource);
+        super(beanSource);
 
-		// check parameters
-		if (propertyName == null) {
-			throw new IllegalArgumentException(getClass()
-					+ ": The bean binding property name can not be null");
-		}
+        // check parameters
+        if (propertyName == null) {
+            throw new IllegalArgumentException(getClass()
+                    + ": The bean binding property name can not be null");
+        }
 
-		// store the property name
-		this.propertyName = propertyName;
+        // store the property name
+        this.propertyName = propertyName;
 
-		// retrieve getter method
-		PropertyDescriptor property = IntrospectionTools.getProperty(
-				beanSource, propertyName);
-		readMethod = property.getReadMethod();
-		if (readMethod == null) {
-			throw new IllegalArgumentException(
-					"No read method defined for property " + propertyName
-							+ " in bean " + beanSource);
-		}
+        // retrieve getter method
+        PropertyDescriptor property = IntrospectionTools.getProperty(
+                beanSource, propertyName);
+        readMethod = property.getReadMethod();
+        if (readMethod == null) {
+            throw new IllegalArgumentException(
+                    "No read method defined for property " + propertyName
+                    + " in bean " + beanSource);
+        }
 
-	}
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public Object getInitialValue() {
-		try {
-			return readMethod.invoke(getBeanSource());
-		} catch (Exception e) {
-			// convert the error into a runtime error to not force the user
-			// catching it
-			throw new RuntimeException(e);
-		}
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public Object getInitialValue() {
+        try {
+            return readMethod.invoke(getBeanSource());
+        }
+        catch (Exception e) {
+            // convert the error into a runtime error to not force the user
+            // catching it
+            throw new RuntimeException(e);
+        }
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	protected String getBindedName() {
-		return propertyName;
-	}
-
+    /**
+     * {@inherit}
+     */
+    @Override
+    protected String getBindedName() {
+        return propertyName;
+    }
 }

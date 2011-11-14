@@ -15,12 +15,9 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.list.target;
 
 import java.util.List;
-
-import javax.swing.event.ListDataListener;
 
 /**
  * A list binding target that receive add / remove / change / replace
@@ -36,31 +33,26 @@ import javax.swing.event.ListDataListener;
  */
 public interface ListBindingTarget<T> {
 
-	/**
-	 * Indicates that some elements where added in the source list (see
-	 * {@link ListDataListener} method)
-	 * 
-	 * @param sourceElements
-	 *            : source list content
-	 * @param elementsAdded
-	 *            : elements added
-	 * @param insertionIndex
-	 *            : first element added insertion index
-	 */
-	void intervalAdded(List<T> sourceElements, List<T> elementsAdded,
-			int insertionIndex);
+    /**
+     * Indicates that some elements where added in the source list
+     * 
+     * @param sourceElements : source list content
+     * @param elementsAdded : elements added
+     * @param insertionIndex : first element added insertion index
+     * @param lastInsertionIndex : last insertion index (inclusive)
+     */
+    void intervalAdded(List<T> sourceElements, List<T> elementsAdded,
+                       int insertionIndex, int lastInsertionIndex);
 
-	/**
-	 * Indicates that some elements where removed in the source list (see
-	 * {@link ListDataListener} method)
-	 * 
-	 * @param sourceElements
-	 *            : source list content
-	 * @param firstIndex
-	 *            : first remove index (in the previous list value)
-	 * @param lastIndex
-	 *            : last remove index (in the previous list value)
-	 */
-	void intervalRemoved(List<T> sourceElements, int firstIndex, int lastIndex);
-
+    /**
+     * Indicates that some elements where removed in the source list
+     * 
+     * @param sourceElements
+     *            : source list content
+     * @param elementsRemoved : elements removed
+     * @param firstIndex : first remove index in the previous list value
+     * @param lastIndex : last remove index in the previous list value (inclusive)
+     */
+    void intervalRemoved(List<T> sourceElements, List<T> elementsRemoved, int firstIndex,
+                         int lastIndex);
 }

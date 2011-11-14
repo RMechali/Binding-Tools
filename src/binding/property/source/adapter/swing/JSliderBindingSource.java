@@ -29,52 +29,49 @@ import binding.property.source.adapter.AbstractBindingSourceAdapter;
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
  */
-public class JSliderBindingSource extends
-		AbstractBindingSourceAdapter<JSlider> implements ChangeListener {
+public class JSliderBindingSource extends AbstractBindingSourceAdapter<JSlider> implements ChangeListener {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param eventSource
-	 *            : component that is at binding source
-	 */
-	public JSliderBindingSource(JSlider eventSource) {
-		super(eventSource);
-	}
+    /**
+     * Constructor
+     * 
+     * @param eventSource : component that is at binding source
+     */
+    public JSliderBindingSource(JSlider eventSource) {
+        super(eventSource);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void startListening(JSlider eventSource) {
-		eventSource.addChangeListener(this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void startListening(JSlider eventSource) {
+        eventSource.addChangeListener(this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void stopListening(JSlider eventSource) {
-		eventSource.removeChangeListener(this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void stopListening(JSlider eventSource) {
+        eventSource.removeChangeListener(this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object getInitialValue() {
-		return getEventSource().getValue();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object getInitialValue() {
+        return getEventSource().getValue();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		// retrieve the current value
-		Object value = getEventSource().getValue();
-		// fire update
-		setAdaptedProperty(value);
-	}
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        // retrieve the current value
+        Object value = getEventSource().getValue();
+        // fire update
+        setAdaptedProperty(value);
+    }
 }

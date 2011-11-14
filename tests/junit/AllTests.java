@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package junit;
 
 import junit.list.TestListBinding;
@@ -31,9 +30,9 @@ import org.junit.runners.Suite;
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses( { TestPropertyBinding.class, TestListBinding.class,
-		ChainedPropertyBindingTest.class })
+@RunWith (Suite.class)
+@Suite.SuiteClasses ({TestPropertyBinding.class, TestListBinding.class,
+    ChainedPropertyBindingTest.class})
 public class AllTests {
-	// all tests
+    // all tests
 }

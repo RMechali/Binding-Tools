@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.property.source.adapter;
 
 import java.beans.PropertyChangeListener;
@@ -35,126 +34,124 @@ import binding.property.source.PropertyBindingSource;
  *            : type of the event source
  */
 public abstract class AbstractBindingSourceAdapter<T> implements
-		PropertyBindingSource {
+        PropertyBindingSource {
 
-	/** Adapted property name **/
-	public static final String ADAPTED_PROPERTY = "adaptedProperty";
+    /** Adapted property name **/
+    public static final String ADAPTED_PROPERTY = "adaptedProperty";
 
-	/** Adapted property **/
-	private Object adaptedProperty;
+    /** Adapted property **/
+    private Object adaptedProperty;
 
-	/** event source **/
-	private final T eventSource;
+    /** event source **/
+    private final T eventSource;
 
-	/** Property change support **/
-	private PropertyChangeSupport changeSupport;
+    /** Property change support **/
+    private PropertyChangeSupport changeSupport;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param eventSource
-	 *            : event source
-	 */
-	public AbstractBindingSourceAdapter(T eventSource) {
-		this.eventSource = eventSource;
-		setAdaptedProperty(getInitialValue());
-	}
+    /**
+     * Constructor
+     * 
+     * @param eventSource : event source
+     */
+    public AbstractBindingSourceAdapter(T eventSource) {
+        this.eventSource = eventSource;
+        setAdaptedProperty(getInitialValue());
+    }
 
-	/**
-	 * Install listening system
-	 */
-	protected void startListening() {
-		// create adaptation support
-		changeSupport = new PropertyChangeSupport(this);
-		// let extending classes start the listening to event source
-		startListening(this.eventSource);
-	}
+    /**
+     * Install listening system
+     */
+    protected void startListening() {
+        // create adaptation support
+        changeSupport = new PropertyChangeSupport(this);
+        // let extending classes start the listening to event source
+        startListening(this.eventSource);
+    }
 
-	/**
-	 * Uninstall listening system (and thus let this be collectible by the GC)
-	 */
-	protected void stopListening() {
-		// delete adaptation support
-		this.changeSupport = null;
-		// let extending classes stop the listening to event source
-		stopListening(this.eventSource);
-	}
+    /**
+     * Uninstall listening system (and thus let this be collectible by the GC)
+     */
+    protected void stopListening() {
+        // delete adaptation support
+        this.changeSupport = null;
+        // let extending classes stop the listening to event source
+        stopListening(this.eventSource);
+    }
 
-	/**
-	 * Starts listening at events
-	 * 
-	 * @param eventSource
-	 *            : event source
-	 */
-	protected abstract void startListening(T eventSource);
+    /**
+     * Starts listening at events
+     * 
+     * @param eventSource
+     *            : event source
+     */
+    protected abstract void startListening(T eventSource);
 
-	/**
-	 * Stops listening at events (and thus let this be collectible by the GC)
-	 * 
-	 * @param eventSource
-	 *            : event source
-	 */
-	protected abstract void stopListening(T eventSource);
+    /**
+     * Stops listening at events (and thus let this be collectible by the GC)
+     * 
+     * @param eventSource
+     *            : event source
+     */
+    protected abstract void stopListening(T eventSource);
 
-	/**
-	 * Getter -
-	 * 
-	 * @return the adaptedProperty
-	 */
-	protected Object getAdaptedProperty() {
-		return adaptedProperty;
-	}
+    /**
+     * Getter -
+     * 
+     * @return the adaptedProperty
+     */
+    protected Object getAdaptedProperty() {
+        return adaptedProperty;
+    }
 
-	/**
-	 * Setter - (extending classes should call this method to notify the event
-	 * change)
-	 * 
-	 * @param adaptedProperty
-	 *            the adaptedProperty to set
-	 */
-	protected void setAdaptedProperty(Object adaptedProperty) {
-		Object oldValue = this.adaptedProperty;
-		this.adaptedProperty = adaptedProperty;
-		// fire value change
-		if (changeSupport != null) {
-			changeSupport.firePropertyChange(ADAPTED_PROPERTY, oldValue,
-					this.adaptedProperty);
-		}
-	}
+    /**
+     * Setter - (extending classes should call this method to notify the event
+     * change)
+     * 
+     * @param adaptedProperty
+     *            the adaptedProperty to set
+     */
+    protected void setAdaptedProperty(Object adaptedProperty) {
+        Object oldValue = this.adaptedProperty;
+        this.adaptedProperty = adaptedProperty;
+        // fire value change
+        if (changeSupport != null) {
+            changeSupport.firePropertyChange(ADAPTED_PROPERTY, oldValue,
+                                             this.adaptedProperty);
+        }
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		if (listener != null && this.changeSupport == null) {
-			// install listening system
-			startListening();
-		}
-		// add the listener
-		this.changeSupport.addPropertyChangeListener(listener);
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        if (listener != null && this.changeSupport == null) {
+            // install listening system
+            startListening();
+        }
+        // add the listener
+        this.changeSupport.addPropertyChangeListener(listener);
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		// remove the listener
-		this.changeSupport.removePropertyChangeListener(listener);
-		if (this.changeSupport != null
-				&& this.changeSupport.getPropertyChangeListeners().length == 0) {
-			stopListening();
-		}
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        // remove the listener
+        this.changeSupport.removePropertyChangeListener(listener);
+        if (this.changeSupport != null
+                && this.changeSupport.getPropertyChangeListeners().length == 0) {
+            stopListening();
+        }
+    }
 
-	/**
-	 * Getter -
-	 * 
-	 * @return the eventSource
-	 */
-	public T getEventSource() {
-		return eventSource;
-	}
-
+    /**
+     * Getter -
+     * 
+     * @return the eventSource
+     */
+    public T getEventSource() {
+        return eventSource;
+    }
 }

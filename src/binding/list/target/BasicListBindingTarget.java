@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.list.target;
 
 import java.util.List;
@@ -23,8 +22,7 @@ import java.util.List;
 /**
  * A very straight forward binding implementation that propagate update events
  * to another list (by listening this second one, you could trigger repaint for
- * example - to do so use one of the JGoodies common lists or implement the
- * Swing untyped ListModel).
+ * example)
  * 
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
@@ -34,24 +32,21 @@ import java.util.List;
  */
 public class BasicListBindingTarget<T> extends AbstractListBindingTarget<T, T> {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param target
-	 *            : target list
-	 * @throws IllegalArgumentException
-	 *             : if the target list is null
-	 */
-	public BasicListBindingTarget(List<T> target) {
-		super(target);
-	}
+    /**
+     * Constructor
+     * 
+     * @param target : target list
+     * @throws IllegalArgumentException if the target list is null
+     */
+    public BasicListBindingTarget(List<T> target) {
+        super(target);
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	protected T convert(T element) {
-		return element;
-	}
-
+    /**
+     * {@inherit}
+     */
+    @Override
+    protected T convert(int elementIndex, T element) {
+        return element;
+    }
 }

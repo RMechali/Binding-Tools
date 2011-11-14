@@ -28,97 +28,89 @@ import java.beans.PropertyChangeSupport;
  */
 public class EditedObject {
 
-	/**
-	 * Edited property logical name. This is a general good practice to declare
-	 * it, in order to facilitate refactor
-	 */
-	public static String EDITED_PROPERTY = "editedProperty";
+    /**
+     * Edited property logical name. This is a general good practice to declare
+     * it, in order to facilitate refactor
+     */
+    public static String EDITED_PROPERTY = "editedProperty";
 
-	/**
-	 * Change support
-	 */
-	private final PropertyChangeSupport changeSupport;
+    /**
+     * Change support
+     */
+    private final PropertyChangeSupport changeSupport;
 
-	/** Edited property, bindable **/
-	private int editedProperty;
+    /** Edited property, bindable **/
+    private int editedProperty;
 
-	/**
-	 * Constructor
-	 */
-	public EditedObject() {
-		changeSupport = new PropertyChangeSupport(this);
-		editedProperty = 50;
-	}
+    /**
+     * Constructor
+     */
+    public EditedObject() {
+        changeSupport = new PropertyChangeSupport(this);
+        editedProperty = 50;
+    }
 
-	/**
-	 * Getter -
-	 * 
-	 * @return the editedProperty
-	 */
-	public int getEditedProperty() {
-		return editedProperty;
-	}
+    /**
+     * Getter -
+     * 
+     * @return the editedProperty
+     */
+    public int getEditedProperty() {
+        return editedProperty;
+    }
 
-	/**
-	 * Setter -
-	 * 
-	 * @param editedProperty
-	 *            the editedProperty to set
-	 */
-	public void setEditedProperty(int editedProperty) {
-		int oldValue = this.editedProperty;
-		this.editedProperty = editedProperty;
-		firePropertyChange(EDITED_PROPERTY, oldValue, this.editedProperty);
-	}
+    /**
+     * Setter -
+     * 
+     * @param editedProperty
+     *            the editedProperty to set
+     */
+    public void setEditedProperty(int editedProperty) {
+        int oldValue = this.editedProperty;
+        this.editedProperty = editedProperty;
+        firePropertyChange(EDITED_PROPERTY, oldValue, this.editedProperty);
+    }
 
-	/**
-	 * Delegate method - adds a property change listener
-	 * 
-	 * @param propertyName
-	 *            : property name
-	 * @param listener
-	 *            : listener to add
-	 * 
-	 * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
-	 *      java.beans.PropertyChangeListener)
-	 */
-	public void addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		changeSupport.addPropertyChangeListener(propertyName, listener);
-	}
+    /**
+     * Delegate method - adds a property change listener
+     * 
+     * @param propertyName : property name
+     * @param listener : listener to add
+     * 
+     * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(java.lang.String,
+     *      java.beans.PropertyChangeListener)
+     */
+    public void addPropertyChangeListener(String propertyName,
+                                          PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(propertyName, listener);
+    }
 
-	/**
-	 * Delegate method - fires a property change
-	 * 
-	 * @param propertyName
-	 *            : property name
-	 * @param oldValue
-	 *            : old value
-	 * @param newValue
-	 *            : new value
-	 * 
-	 * @see java.beans.PropertyChangeSupport#firePropertyChange(java.lang.String,
-	 *      int, int)
-	 */
-	public void firePropertyChange(String propertyName, int oldValue,
-			int newValue) {
-		changeSupport.firePropertyChange(propertyName, oldValue, newValue);
-	}
+    /**
+     * Delegate method - fires a property change
+     * 
+     * @param propertyName : property name
+     * @param oldValue : old value
+     * @param newValue : new value
+     * 
+     * @see java.beans.PropertyChangeSupport#firePropertyChange(java.lang.String,
+     *      int, int)
+     */
+    public void firePropertyChange(String propertyName, int oldValue,
+                                   int newValue) {
+        changeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
 
-	/**
-	 * Delegate method - removes a property change listener
-	 * 
-	 * @param propertyName
-	 *            : property name
-	 * @param listener
-	 *            : listener to remove
-	 * 
-	 * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
-	 *      java.beans.PropertyChangeListener)
-	 */
-	public void removePropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		changeSupport.removePropertyChangeListener(propertyName, listener);
-	}
-
+    /**
+     * Delegate method - removes a property change listener
+     * 
+     * @param propertyName : property name
+     * @param listener : listener to remove
+     * 
+     * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(java.lang.String,
+     *      java.beans.PropertyChangeListener)
+     */
+    public void removePropertyChangeListener(String propertyName,
+                                             PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(propertyName, listener);
+    }
 }

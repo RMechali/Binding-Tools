@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.property.target;
 
 /**
@@ -28,18 +27,15 @@ package binding.property.target;
  */
 public interface PropertyBindingTarget {
 
-	/**
-	 * Update method for this binding target (invoked at link creation, at
-	 * source change time and at source and target setter invocations).
-	 * 
-	 * @note : You should never assert that the value cannot be null. Actually,
-	 *       at list when terminating the binding, a null value will be
-	 *       propagated (this makes possible to do cascade bindings auto
-	 *       actualizing)
-	 * 
-	 * @param newValue
-	 *            : new value of the source property
-	 */
-	void updateTarget(Object newValue);
-
+    /**
+     * Update method for this binding target (invoked at link creation, at
+     * source change time and at source and target setter invocations).
+     * 
+     * @note : You should never assert that the value cannot be null. Actually,
+     *       at least when terminating the binding, a null value will be
+     *       propagated
+     * 
+     * @param newValue new value of the source property
+     */
+    void updateTarget(Object newValue);
 }

@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.property.target;
 
 import java.lang.reflect.Method;
@@ -38,81 +37,83 @@ import binding.tools.IntrospectionTools;
  */
 public class MapBindingTarget implements PropertyBindingTarget {
 
-	/** Target bean **/
-	private final Object beanTarget;
+    /** Target bean **/
+    private final Object beanTarget;
 
-	/** Setter method **/
-	private final Method writeMethod;
+    /** Setter method **/
+    private Method writeMethod;
 
-	/** Property key to be used to set the property value **/
-	private final String propertyKey;
+    /** Property key to be used to set the property value **/
+    private final String propertyKey;
 
-	/**
-	 * 
-	 * Constructor
-	 * 
-	 * @param beanTarget
-	 *            : bean target
-	 * @param setMethodName
-	 *            : set method name name (for instance "putValue" if your bean
-	 *            source is abstract action)
-	 * @param propertyKey
-	 *            : key of the property to update on value changes
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if the bean target is null
-	 * @throws IllegalArgumentException
-	 *             if the bean property name is null
-	 * @throws IllegalArgumentException
-	 *             if the set method is not defined for that property in the
-	 *             bean source
-	 * @warning : the setter type cannot be checked so be carefull while using
-	 *          this type of target
-	 */
-	public MapBindingTarget(Object beanTarget, String setMethodName,
-			String propertyKey) {
+    /**
+     * 
+     * Constructor
+     * 
+     * @param beanTarget : bean target
+     * @param setMethodName : set method name name (for instance "putValue" if your bean
+     *            source is abstract action)
+     * @param propertyKey : key of the property to update on value changes
+     * 
+     * @throws IllegalArgumentException if the bean target is null
+     * @throws IllegalArgumentException if the bean property name is null
+     * @throws IllegalArgumentException if the set method is not defined for that property in the
+     *             bean source
+     * @warning : the setter type cannot be checked so be carefull while using
+     *          this type of target
+     */
+    public MapBindingTarget(Object beanTarget, String setMethodName,
+                            String propertyKey) {
 
-		// check parameters
-		if (beanTarget == null) {
-			throw new IllegalArgumentException(getClass()
-					+ ": The bean binding target can not be null");
-		}
-		if (setMethodName == null) {
-			throw new IllegalArgumentException(getClass()
-					+ ": The bean map set method name can not be null");
-		}
-		if (propertyKey == null) {
-			throw new IllegalArgumentException(getClass()
-					+ ": The bean map property key can not be null");
-		}
+        // check parameters
+        if (beanTarget == null) {
+            throw new IllegalArgumentException(getClass()
+                    + ": The bean binding target can not be null");
+        }
+        if (setMethodName == null) {
+            throw new IllegalArgumentException(getClass()
+                    + ": The bean map set method name can not be null");
+        }
+        if (propertyKey == null) {
+            throw new IllegalArgumentException(getClass()
+                    + ": The bean map property key can not be null");
+        }
 
-		// store the target bean
-		this.beanTarget = beanTarget;
-		// store the map property key
-		this.propertyKey = propertyKey;
-		// retrieve the write method
-		this.writeMethod = IntrospectionTools.retrieveMethod(beanTarget,
-				setMethodName, String.class, Object.class);
-		if (this.writeMethod == null) {
-			// no write method defined
-			throw new IllegalArgumentException(getClass()
-					+ ": the write method " + setMethodName
-					+ "(String,Object) does not exist in "
-					+ beanTarget.getClass());
-		}
-	}
+        // store the target bean
+        this.beanTarget = beanTarget;
+        // store the map property key
+        this.propertyKey = propertyKey;
+        // retrieve the write method
+        try {
+            this.writeMethod = IntrospectionTools.retrieveMethod(beanTarget,
+                                                                 setMethodName, String.class, Object.class);
+        }
+        catch (Exception e) {
+            // some swing components does define an object as key instead of a string
+            this.writeMethod = IntrospectionTools.retrieveMethod(beanTarget,
+                                                                 setMethodName, Object.class, Object.class);
+        }
+        if (this.writeMethod == null) {
+            // no write method defined
+            throw new IllegalArgumentException(getClass()
+                    + ": the write method " + setMethodName
+                    + "(String,Object) does not exist in "
+                    + beanTarget.getClass());
+        }
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void updateTarget(Object newValue) {
-		try {
-			writeMethod.invoke(beanTarget, propertyKey, newValue);
-		} catch (Exception e) {
-			// convert the error into a runtime error to not force the user
-			// catching it
-			throw new RuntimeException(e);
-		}
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void updateTarget(Object newValue) {
+        try {
+            writeMethod.invoke(beanTarget, propertyKey, newValue);
+        }
+        catch (Exception e) {
+            // convert the error into a runtime error to not force the user
+            // catching it
+            throw new RuntimeException(e);
+        }
+    }
 }

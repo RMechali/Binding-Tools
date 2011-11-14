@@ -15,12 +15,10 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.list.source;
 
+import binding.list.definition.TypedListDataListener;
 import java.util.List;
-
-import javax.swing.event.ListDataListener;
 
 /**
  * A list binding source, that allows adding / removing a list listener and
@@ -34,28 +32,27 @@ import javax.swing.event.ListDataListener;
  */
 public interface ListBindingSource<T> {
 
-	/**
-	 * Adds a list data listener to the source list changes
-	 * 
-	 * @param listener
-	 *            : listener
-	 */
-	void addListDataListener(ListDataListener listener);
+    /**
+     * Adds a list data listener to the source list changes
+     * 
+     * @param listener
+     *            : listener
+     */
+    void addListDataListener(TypedListDataListener listener);
 
-	/**
-	 * Remove a list data listener
-	 * 
-	 * @param listener
-	 *            : listener
-	 */
-	void removeListDataListener(ListDataListener listener);
+    /**
+     * Remove a list data listener
+     * 
+     * @param listener
+     *            : listener
+     */
+    void removeListDataListener(TypedListDataListener listener);
 
-	/**
-	 * Returns the list elements (called at binding start or o major list
-	 * update)
-	 * 
-	 * @return -
-	 */
-	List<T> getElements();
-
+    /**
+     * Returns the list elements (called at binding start or o major list
+     * update)
+     * 
+     * @return -
+     */
+    List<T> getElements();
 }

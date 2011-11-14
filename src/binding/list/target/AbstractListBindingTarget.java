@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.list.target;
 
 import java.util.ArrayList;
@@ -23,93 +22,87 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Class that propagates changes of a source list of type ObservableList<T> to a
- * target list of type ObservableList<U>
+ * Class that propagates changes of a source list of type MutableList<T> to a
+ * target list of type List<U>
  * 
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
  * 
- * @param <T>
- *            : source list elements type
- * @param <U>
- *            : target list elements type
+ * @param <T> : source list elements type
+ * @param <U> : target list elements type
  */
 public abstract class AbstractListBindingTarget<T, U> implements
-		ListBindingTarget<T> {
+        ListBindingTarget<T> {
 
-	/** Target list **/
-	private final List<U> target;
+    /** Target list **/
+    private final List<U> target;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param target
-	 *            : target list
-	 * @throws IllegalArgumentException
-	 *             : if the target list is null
-	 */
-	public AbstractListBindingTarget(List<U> target) {
-		// check parameters
-		if (target == null) {
-			throw new IllegalArgumentException(getClass()
-					+ ": the target list can not be null");
-		}
+    /**
+     * Constructor
+     * 
+     * @param target : target list
+     * @throws IllegalArgumentException : if the target list is null
+     */
+    public AbstractListBindingTarget(List<U> target) {
+        // check parameters
+        if (target == null) {
+            throw new IllegalArgumentException(getClass()
+                    + ": the target list can not be null");
+        }
 
-		this.target = target;
-	}
+        this.target = target;
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void intervalAdded(List<T> sourceElements, List<T> elementsAdded,
-			int insertionIndex) {
-		this.target.addAll(insertionIndex, convertElements(elementsAdded));
-	}
+    @Override
+    public final void intervalAdded(List<T> sourceElements, List<T> elementsAdded,
+                                    int insertionIndex, int lastInsertionIndex) {
+        this.target.addAll(insertionIndex, convertElements(insertionIndex, elementsAdded));
+    }
 
-	/**
-	 * Converts a a list of elements of type T into a list of element of type U
-	 * (target list type)
-	 * 
-	 * @param toConvert
-	 *            : elements to convert
-	 * @return - the new elements list
-	 */
-	protected Collection<U> convertElements(List<T> toConvert) {
-		List<U> converted = new ArrayList<U>();
-		for (T element : toConvert) {
-			converted.add(convert(element));
-		}
-		return converted;
-	}
+    /**
+     * Converts a a list of elements of type T into a list of element of type U
+     * (target list type)
+     * 
+     * @param toConvert : elements to convert
+     * @param index  : index to convert
+     * @return - the new elements list
+     */
+    protected final Collection<U> convertElements(int index, List<T> toConvert) {
+        List<U> converted = new ArrayList<U>();
+        for (int i = 0; i < toConvert.size(); i++) {
+            converted.add(convert(index, toConvert.get(i)));
+        }
+        return converted;
+    }
 
-	/**
-	 * Converts an element of type T into an element of type U
-	 * 
-	 * @param element
-	 *            : element to convert
-	 * @return - the converted element
-	 */
-	protected abstract U convert(T element);
+    /**
+     * Converts an element of type T into an element of type U
+     * 
+     * @param  elementIndex : index of the element to convert in list 
+     * @param element : element to convert
+     * @return - the converted element
+     */
+    protected abstract U convert(int elementIndex, T element);
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void intervalRemoved(List<T> sourceElements, int firstIndex,
-			int lastIndex) {
+    /**
+     * {@inherit}
+     */
+    @Override
+    public final void intervalRemoved(List<T> sourceElements, List<T> elementsRemoved,
+                                      int firstIndex,
+                                      int lastIndex) {
 
-		List<U> toRemove = this.target.subList(firstIndex, lastIndex + 1);
-		removeElements(toRemove);
-	}
+        List<U> toRemove = this.target.subList(firstIndex, lastIndex + 1);
+        removeElements(toRemove);
+    }
 
-	/**
-	 * Removes the following elements from the local copy list
-	 * 
-	 * @param toRemove
-	 *            : elements to remove
-	 */
-	protected void removeElements(List<U> toRemove) {
-		toRemove.clear();
-	}
+    /**
+     * Removes the following elements from the local copy list.
+     * Note : pay attention to call this method if you override it to dispose of elements removed
+     * 
+     * @param toRemove : elements to remove
+     */
+    protected void removeElements(List<U> toRemove) {
+        toRemove.clear();
+    }
 }

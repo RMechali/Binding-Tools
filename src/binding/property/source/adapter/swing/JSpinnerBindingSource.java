@@ -31,47 +31,46 @@ import binding.property.source.adapter.AbstractBindingSourceAdapter;
  */
 public class JSpinnerBindingSource extends AbstractBindingSourceAdapter<JSpinner> implements ChangeListener {
 
-	/**
-	 * Constructor
-	 * @param eventSource : component that is at binding source
-	 */
-	public JSpinnerBindingSource(JSpinner eventSource) {
-		super(eventSource);
-	}
+    /**
+     * Constructor
+     * @param eventSource : component that is at binding source
+     */
+    public JSpinnerBindingSource(JSpinner eventSource) {
+        super(eventSource);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void startListening(JSpinner eventSource) {
-		eventSource.addChangeListener(this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void startListening(JSpinner eventSource) {
+        eventSource.addChangeListener(this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void stopListening(JSpinner eventSource) {
-		eventSource.removeChangeListener(this);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void stopListening(JSpinner eventSource) {
+        eventSource.removeChangeListener(this);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object getInitialValue() {
-		return getEventSource().getValue();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object getInitialValue() {
+        return getEventSource().getValue();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		// retrieve the current value
-		Object value = getEventSource().getValue();
-		// fire update
-		setAdaptedProperty(value);
-	}
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        // retrieve the current value
+        Object value = getEventSource().getValue();
+        // fire update
+        setAdaptedProperty(value);
+    }
 }

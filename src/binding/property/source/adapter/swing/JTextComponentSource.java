@@ -15,7 +15,6 @@
  * and GNU Lesser General Public License along with Binding Tools project.
  * If not, see <http://www.gnu.org/licenses/>.
  **/
-
 package binding.property.source.adapter.swing;
 
 import javax.swing.event.DocumentEvent;
@@ -31,78 +30,75 @@ import binding.property.source.adapter.AbstractBindingSourceAdapter;
  * Copyright 2010, Raphael Mechali <br>
  * Distributed under Lesser GNU General Public License (LGPL)
  */
-public class JTextComponentSource extends
-		AbstractBindingSourceAdapter<JTextComponent> implements
-		DocumentListener {
+public class JTextComponentSource extends AbstractBindingSourceAdapter<JTextComponent> implements
+        DocumentListener {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param eventSource
-	 *            : event source
-	 */
-	public JTextComponentSource(JTextComponent eventSource) {
-		super(eventSource);
-	}
+    /**
+     * Constructor
+     * 
+     * @param eventSource : event source
+     */
+    public JTextComponentSource(JTextComponent eventSource) {
+        super(eventSource);
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	protected void startListening(JTextComponent eventSource) {
-		// listen to the document
-		eventSource.getDocument().addDocumentListener(this);
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    protected void startListening(JTextComponent eventSource) {
+        // listen to the document
+        eventSource.getDocument().addDocumentListener(this);
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	protected void stopListening(JTextComponent eventSource) {
-		// listen to the document
-		eventSource.getDocument().removeDocumentListener(this);
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    protected void stopListening(JTextComponent eventSource) {
+        // listen to the document
+        eventSource.getDocument().removeDocumentListener(this);
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public Object getInitialValue() {
-		return getEventSource().getText();
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public Object getInitialValue() {
+        return getEventSource().getText();
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void changedUpdate(DocumentEvent e) {
-		// update using the current text value
-		update();
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        // update using the current text value
+        update();
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void insertUpdate(DocumentEvent e) {
-		// update using the current text value
-		update();
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        // update using the current text value
+        update();
+    }
 
-	/**
-	 * {@inherit}
-	 */
-	@Override
-	public void removeUpdate(DocumentEvent e) {
-		// update using the current text value
-		update();
-	}
+    /**
+     * {@inherit}
+     */
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        // update using the current text value
+        update();
+    }
 
-	/**
-	 * Updates the adapted property
-	 */
-	private void update() {
-		setAdaptedProperty(getEventSource().getText());
-	}
-
+    /**
+     * Updates the adapted property
+     */
+    private void update() {
+        setAdaptedProperty(getEventSource().getText());
+    }
 }
